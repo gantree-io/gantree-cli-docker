@@ -8,7 +8,12 @@ USAGE=$(cat <<-END
     {host-folder} = absolute path to host working folder
 
     Useful places to put files:
-    {host-folder}/config/gcp-service-account.json
+    {host-folder}/credentials/google_application_credentials.json
+
+    {host-folder}/credentials/ssh_id_rsa_validator
+    {host-folder}/credentials/ssh_id_rsa_validator.pub
+
+    {host-folder}/config/main.config.json
 
 END
 )
