@@ -39,13 +39,14 @@ if [ ! -d "$STATE_FOLDER" ]; then
 fi
 
 if [ ! -d "$CONFIG_FOLDER" ]; then
-    echo -e "\nConfig directory not found, you likely want to create one"
+    echo -e "\nConfig directory not found, creating.."
     mkdir $CONFIG_FOLDER
     chmod 777 $CONFIG_FOLDER
+    # TODO(ryan): create default config with gropius-cli
 fi
 
 if [ ! -d "$CRED_FOLDER" ]; then
-    echo -e "\nCredentials directory not found, you likely want to create one"
+    echo -e "\nCredentials directory not found, creating.."
     mkdir $CRED_FOLDER
     chmod 777 $CRED_FOLDER
 fi
