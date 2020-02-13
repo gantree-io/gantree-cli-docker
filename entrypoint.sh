@@ -1,22 +1,73 @@
 #!/bin/bash
 
-USAGE="\nContainer Usage:\n docker run -v {abs-path-to-host-working-folder}:/gantree --rm -ti gantree-cli [arguments]"
+USAGE=$(cat <<-END
+    Container Usage:
+    docker run -v {host-folder}:/gantree --rm -ti gantree-cli [arguments]"
 
+    Where:
+    {host-folder} = absolute path to host working folder
+
+    Useful places to put files:
+    {host-folder}/config/gcp-service-account.json
+
+END
+)
+
+GANTREE_ROOT="/gantree"
+STATE_FOLDER="${GANTREE_ROOT}/state"
+CONFIG_FOLDER="${GANTREE_ROOT}/config"
+CRED_FOLDER="${GANTREE_ROOT}/credentials"
+
+GCP_CREDENTIAL_NAME="google_application_credentials.json"
+AWS_ACCESS_KEY_NAME="google_application_credentials"
+AWS_SECRET_KEY_NAME="google_application_credentials"
+DO_TOKEN_NAME="digitalocean_token"
+
+VALIDATOR_PRIVATE_KEY_NAME="ssh_id_rsa_validator"
+
+# check host folder mounted
 if [ ! -d "/gantree" ]; then
     echo -e $USAGE
     exit 1
 fi
 
-if [ ! -d "/gantree/state" ]; then
-    echo -e "\nstate directory not found, creating.."
-    mkdir /gantree/state
+# check sub folders
+if [ ! -d "$STATE_FOLDER" ]; then
+    echo -e "\nState directory not found, creating.."
+    mkdir $STATE_FOLDER
 fi
 
-if [ ! -d "/gantree/config" ]; then
-    echo -e "\nconfig directory not found, creating.."
-    mkdir /gantree/config
+if [ ! -d "$CONFIG_FOLDER" ]; then
+    echo -e "\nConfig directory not found, creating.."
+    mkdir $CONFIG_FOLDER
 fi
+
+if [ ! -d "$CRED_FOLDER" ]; then
+    echo -e "\nCredentials directory not found, creating.."
+    mkdir $CRED_FOLDER
+fi
+
+# check credentials
+if [ -f "$CRED_FOLDER/$GCP_CREDENTIAL_NAME" ]; then
+    GOOGLE_APPLICATION_CREDENTIALS="/gantree/credentials/$gcp_credential_name"
+fi
+
+if [ ! -f "$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME" ]; then
+    echo -e "Validator ssh private key required at: credentials/$VALIDATOR_PRIVATE_KEY_NAME"
+    exit 1
+fi
+
+if [ -f "$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME.pub" ]; then
+    echo -e "Validator ssh public key required at: credentials/$VALIDATOR_PRIVATE_KEY_NAME.pub"
+    exit 1
+fi
+
+# setup ssh
+SSH_ID_RSA_VALIDATOR="$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME"
+eval $(ssh-agent) &>/dev/null
+ssh-add "$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME"
 
 echo -e "\n"
 
+# run gantree-cli
 gantree-cli "$@"
