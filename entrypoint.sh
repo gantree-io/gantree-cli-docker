@@ -35,19 +35,19 @@ fi
 if [ ! -d "$STATE_FOLDER" ]; then
     echo -e "\nState directory not found, creating.."
     mkdir $STATE_FOLDER
-    chmod 666 $STATE_FOLDER
+    chmod 777 $STATE_FOLDER
 fi
 
 if [ ! -d "$CONFIG_FOLDER" ]; then
     echo -e "\nConfig directory not found, you likely want to create one"
     mkdir $CONFIG_FOLDER
-    chmod 666 $CONFIG_FOLDER
+    chmod 777 $CONFIG_FOLDER
 fi
 
 if [ ! -d "$CRED_FOLDER" ]; then
     echo -e "\nCredentials directory not found, you likely want to create one"
     mkdir $CRED_FOLDER
-    chmod 666 $CRED_FOLDER
+    chmod 777 $CRED_FOLDER
 fi
 
 # check credentials
