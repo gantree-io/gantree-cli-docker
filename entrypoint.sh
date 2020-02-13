@@ -35,16 +35,19 @@ fi
 if [ ! -d "$STATE_FOLDER" ]; then
     echo -e "\nState directory not found, creating.."
     mkdir $STATE_FOLDER
+    chmod 666 $STATE_FOLDER
 fi
 
 if [ ! -d "$CONFIG_FOLDER" ]; then
-    echo -e "\nConfig directory not found, creating.."
+    echo -e "\nConfig directory not found, you likely want to create one"
     mkdir $CONFIG_FOLDER
+    chmod 666 $CONFIG_FOLDER
 fi
 
 if [ ! -d "$CRED_FOLDER" ]; then
-    echo -e "\nCredentials directory not found, creating.."
+    echo -e "\nCredentials directory not found, you likely want to create one"
     mkdir $CRED_FOLDER
+    chmod 666 $CRED_FOLDER
 fi
 
 # check credentials
@@ -53,12 +56,12 @@ if [ -f "$CRED_FOLDER/$GCP_CREDENTIAL_NAME" ]; then
 fi
 
 if [ ! -f "$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME" ]; then
-    echo -e "Validator ssh private key required at: credentials/$VALIDATOR_PRIVATE_KEY_NAME"
+    echo -e "\nValidator ssh private key required at: credentials/$VALIDATOR_PRIVATE_KEY_NAME"
     exit 1
 fi
 
 if [ -f "$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME.pub" ]; then
-    echo -e "Validator ssh public key required at: credentials/$VALIDATOR_PRIVATE_KEY_NAME.pub"
+    echo -e "\nValidator ssh public key required at: credentials/$VALIDATOR_PRIVATE_KEY_NAME.pub"
     exit 1
 fi
 
