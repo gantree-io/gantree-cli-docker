@@ -15,6 +15,7 @@ WORKDIR /ansible
 VOLUME [ "/ansible" ]
 ARG ANSIBLE_VERSION=2.9
 RUN pip install ansible==$ANSIBLE_VERSION
+WORKDIR /home
 
 # Install terraform
 ARG TERRAFORM_VERSION=0.12.20
@@ -28,5 +29,10 @@ RUN npm install -g @flexdapps/gantree-cli
 # Setup ansible role requirements
 RUN ansible-galaxy install -r /usr/local/lib/node_modules/@flexdapps/gantree-cli/ansible/requirements/requirements.yml
 
+# Setup entrypoint script
+# See https://serverfault.com/a/940706 for why we can't chmod this in the dockerfile
+COPY ./entrypoint.sh entrypoint.sh
+
 # Run gantree-cli
-ENTRYPOINT ["gantree-cli"]
+ENTRYPOINT ["./entrypoint.sh"]
+#ENTRYPOINT ["./e"]
