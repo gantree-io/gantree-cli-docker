@@ -53,16 +53,16 @@ fi
 
 # check credentials
 if [ -f "$CRED_FOLDER/$GCP_CREDENTIAL_NAME" ]; then
-    GOOGLE_APPLICATION_CREDENTIALS="/gantree/credentials/$gcp_credential_name"
+    GOOGLE_APPLICATION_CREDENTIALS="$CRED_FOLDER/$GCP_CREDENTIAL_NAME"
 fi
 
 if [ ! -f "$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME" ]; then
-    echo -e "\nValidator ssh private key required at: credentials/$VALIDATOR_PRIVATE_KEY_NAME"
+    echo -e "\nValidator ssh private key required at: {host-folder}/credentials/$VALIDATOR_PRIVATE_KEY_NAME"
     exit 1
 fi
 
 if [ -f "$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME.pub" ]; then
-    echo -e "\nValidator ssh public key required at: credentials/$VALIDATOR_PRIVATE_KEY_NAME.pub"
+    echo -e "\nValidator ssh public key required at: {host-folder}/credentials/$VALIDATOR_PRIVATE_KEY_NAME.pub"
     exit 1
 fi
 
