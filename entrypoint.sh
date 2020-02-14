@@ -63,11 +63,13 @@ fi
 
 if [ ! -f "$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME" ]; then
     echo -e "\nValidator ssh private key required at: {host-folder}/credentials/$VALIDATOR_PRIVATE_KEY_NAME"
+    echo -e $USAGE
     exit 1
 fi
 
 if [ -f "$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME.pub" ]; then
     echo -e "\nValidator ssh public key required at: {host-folder}/credentials/$VALIDATOR_PRIVATE_KEY_NAME.pub"
+    echo -e $USAGE
     exit 1
 fi
 
