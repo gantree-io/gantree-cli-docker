@@ -36,6 +36,8 @@ RUN eval $(ssh-agent)
 # See https://serverfault.com/a/940706 for why we can't chmod this in the dockerfile
 COPY ./entrypoint.sh entrypoint.sh
 
+ENV TERRAFORM_STATEFILE_PATH=/gantree/state
+
 # Run gantree-cli
 ENTRYPOINT ["./entrypoint.sh"]
 #ENTRYPOINT ["./e"]
