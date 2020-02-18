@@ -30,12 +30,12 @@ docker build -t gantree-cli-docker .
 
 ### Run gantree-cli-docker
 ```
-docker run -v {host-config-directory}:/gantree --rm -ti {container-name} [cli arguments]
+docker run -v {host-config-directory}:/gantree --user $(id -u):$(id -g) --rm -ti {container-name} [cli arguments]
 ```
 
 eg.
 ```
-docker run -v /home/myuser/work/gantree_work:/gantree --rm -ti gantree-cli-docker sync --config /gantree/config/main.conf
+docker run -v /home/myuser/work/gantree_work:/gantree --user $(id -u):$(id -g) --rm -ti gantree-cli-docker sync --config /gantree/config/main.conf
 ```
 
 

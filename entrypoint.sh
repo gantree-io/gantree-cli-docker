@@ -36,24 +36,33 @@ if [ ! -d "/gantree" ]; then
     exit 1
 fi
 
+GANTREE_ROOT_OWNER=$(stat -c '%u' /gantree)
+if [ $GANTREE_ROOT_OWNER -ne $(id -u) ]; then
+    echo -e "\nPlease ensure docker user has ownership of mounted {host-folder} on host system"
+
+    echo -e "\n{host-folder} owner: $GANTREE_ROOT_OWNER"
+    echo -e "Docker user: $(id -u)"
+
+    echo -e "\nYou can do this with:\nsudo chown $(id -u):$(id -g) {host-folder} on the host machine"
+    echo -e "\nWhere {host-folder} is the absolute path to the host-folder you're mounting"
+    exit 1
+fi
+
 # check sub folders
 if [ ! -d "$STATE_FOLDER" ]; then
     echo -e "\nState directory not found, creating.."
     mkdir $STATE_FOLDER
-    chmod 777 $STATE_FOLDER
 fi
 
 if [ ! -d "$CONFIG_FOLDER" ]; then
     echo -e "\nConfig directory not found, creating.."
     mkdir $CONFIG_FOLDER
-    chmod 777 $CONFIG_FOLDER
     # TODO(ryan): create default config with gropius-cli
 fi
 
 if [ ! -d "$CRED_FOLDER" ]; then
     echo -e "\nCredentials directory not found, creating.."
     mkdir $CRED_FOLDER
-    chmod 777 $CRED_FOLDER
 fi
 
 # check credentials
@@ -61,22 +70,27 @@ if [ -f "$CRED_FOLDER/$GCP_CREDENTIAL_NAME" ]; then
     GOOGLE_APPLICATION_CREDENTIALS="$CRED_FOLDER/$GCP_CREDENTIAL_NAME"
 fi
 
-if [ ! -f "$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME" ]; then
-    echo -e "\nValidator ssh private key required at: {host-folder}/credentials/$VALIDATOR_PRIVATE_KEY_NAME"
-    echo -e $USAGE
-    exit 1
-fi
+if [ -f "$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME" -o -f "$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME.pub" ]; then
+    if [ ! -f "$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME" ]; then
+        echo -e "\nCould not find $VALIDATOR_PRIVATE_KEY_NAME.pub"
+        exit 1
+    fi
 
-if [ -f "$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME.pub" ]; then
-    echo -e "\nValidator ssh public key required at: {host-folder}/credentials/$VALIDATOR_PRIVATE_KEY_NAME.pub"
-    echo -e $USAGE
-    exit 1
+    if [ ! -f "$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME.pub" ]; then
+        echo -e "\nCould not find $VALIDATOR_PRIVATE_KEY_NAME"
+        exit 1
+    fi
+else
+    ssh-keygen -f $CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME -t rsa -q -N ""
+
+    echo -e "\nNo validator ssh key found at: {host-folder}/credentials/$VALIDATOR_PRIVATE_KEY_NAME"
+    echo -e "Generating.."
 fi
 
 # setup ssh
 SSH_ID_RSA_VALIDATOR="$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME"
 eval $(ssh-agent) &>/dev/null
-ssh-add "$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME"
+ssh-add "$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME" &>/dev/null
 
 echo -e "\n"
 

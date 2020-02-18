@@ -40,4 +40,3 @@ ENV TERRAFORM_STATEFILE_PATH=/gantree/state
 
 # Run gantree-cli
 ENTRYPOINT ["./entrypoint.sh"]
-#ENTRYPOINT ["./e"]
