@@ -36,6 +36,7 @@ if [ ! -d "/gantree" ]; then
     exit 1
 fi
 
+# check host folder permissions
 GANTREE_ROOT_OWNER=$(stat -c '%u' /gantree)
 if [ $GANTREE_ROOT_OWNER -ne $(id -u) ]; then
     echo -e "\nPlease ensure docker user has ownership of mounted {host-folder} on host system"
@@ -57,7 +58,6 @@ fi
 if [ ! -d "$CONFIG_FOLDER" ]; then
     echo -e "\nConfig directory not found, creating.."
     mkdir $CONFIG_FOLDER
-    # TODO(ryan): create default config with gropius-cli
 fi
 
 if [ ! -d "$CRED_FOLDER" ]; then
@@ -70,6 +70,7 @@ if [ -f "$CRED_FOLDER/$GCP_CREDENTIAL_NAME" ]; then
     GOOGLE_APPLICATION_CREDENTIALS="$CRED_FOLDER/$GCP_CREDENTIAL_NAME"
 fi
 
+# check ssh keys
 if [ -f "$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME" -o -f "$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME.pub" ]; then
     if [ ! -f "$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME" ]; then
         echo -e "\nCould not find $VALIDATOR_PRIVATE_KEY_NAME.pub"
