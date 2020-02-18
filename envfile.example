@@ -1,0 +1,3 @@
+AWS	AWS_ACCESS_KEY_ID={my-aws-access-key}
+AWS_SECRET_ACCESS_KEY={my-aws-secret-key}
+DIGITALOCEAN_TOKEN={my-digitalocean-access-token}
