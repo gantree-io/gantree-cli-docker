@@ -20,13 +20,11 @@ END
 
 GANTREE_ROOT="/gantree"
 STATE_FOLDER="${GANTREE_ROOT}/state"
+TF_PLUGIN_CACHE_FOLDER="${GANTREE_ROOT}/tf-plugin-cache"
 CONFIG_FOLDER="${GANTREE_ROOT}/config"
 CRED_FOLDER="${GANTREE_ROOT}/credentials"
 
 GCP_CREDENTIAL_NAME="google_application_credentials.json"
-AWS_ACCESS_KEY_NAME="google_application_credentials"
-AWS_SECRET_KEY_NAME="google_application_credentials"
-DO_TOKEN_NAME="digitalocean_token"
 
 VALIDATOR_PRIVATE_KEY_NAME="ssh_id_rsa_validator"
 
@@ -55,6 +53,12 @@ if [ ! -d "$STATE_FOLDER" ]; then
     mkdir $STATE_FOLDER
 fi
 
+if [ ! -d "$TF_PLUGIN_CACHE_FOLDER" ]; then
+    echo -e "\nTerraform plugin cache directory not found, creating.."
+    mkdir $TF_PLUGIN_CACHE_FOLDER
+fi
+export TF_PLUGIN_CACHE_DIR=$TF_PLUGIN_CACHE_FOLDER
+
 if [ ! -d "$CONFIG_FOLDER" ]; then
     echo -e "\nConfig directory not found, creating.."
     mkdir $CONFIG_FOLDER
@@ -64,34 +68,26 @@ if [ ! -d "$CRED_FOLDER" ]; then
     echo -e "\nCredentials directory not found, creating.."
     mkdir $CRED_FOLDER
 fi
+chmod 0700 $CRED_FOLDER
 
 # check credentials
+echo "$CRED_FOLDER/$GCP_CREDENTIAL_NAME"
 if [ -f "$CRED_FOLDER/$GCP_CREDENTIAL_NAME" ]; then
-    GOOGLE_APPLICATION_CREDENTIALS="$CRED_FOLDER/$GCP_CREDENTIAL_NAME"
+    export GOOGLE_APPLICATION_CREDENTIALS="$CRED_FOLDER/$GCP_CREDENTIAL_NAME"
 fi
 
 # check ssh keys
-if [ -f "$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME" -o -f "$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME.pub" ]; then
-    if [ ! -f "$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME" ]; then
-        echo -e "\nCould not find $VALIDATOR_PRIVATE_KEY_NAME.pub"
-        exit 1
-    fi
-
-    if [ ! -f "$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME.pub" ]; then
-        echo -e "\nCould not find $VALIDATOR_PRIVATE_KEY_NAME"
-        exit 1
-    fi
-else
-    ssh-keygen -f $CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME -t rsa -q -N ""
+if [ ! -f "$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME" ]; then
+    ssh-keygen -t rsa -b 2048 -m PEM -f $CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME -q -N ""
 
     echo -e "\nNo validator ssh key found at: {host-folder}/credentials/$VALIDATOR_PRIVATE_KEY_NAME"
     echo -e "Generating.."
 fi
 
 # setup ssh
-SSH_ID_RSA_VALIDATOR="$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME"
+export SSH_ID_RSA_VALIDATOR="$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME"
 eval $(ssh-agent) &>/dev/null
-ssh-add "$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME" &>/dev/null
+ssh-add "$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME" # &>/dev/null
 
 echo -e "\n"
 

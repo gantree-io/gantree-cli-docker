@@ -21,13 +21,21 @@ WORKDIR /home
 ARG TERRAFORM_VERSION=0.12.20
 RUN cd /tmp && \
     wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip && \
-    unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+    unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /usr/bin
+ENV TERRAFORM_STATEFILE_PATH=/gantree/state
 
-# Install gantree-cli
-RUN npm install -g @flexdapps/gantree-cli
+# install from tgz for the moment
+ARG GANTREE_CLI_PKG=flexdapps-gantree-cli-0.1.0-rc3.tgz
+COPY ./pkg/$GANTREE_CLI_PKG $GANTREE_CLI_PKG
+RUN npm install -g $GANTREE_CLI_PKG
+
+# TODO(ryan): Switch back to this when we have the cli on public npm
+# RUN npm install -g @flexdapps/gantree-cli
 
 # Setup ansible role requirements
-RUN ansible-galaxy install -r /usr/local/lib/node_modules/@flexdapps/gantree-cli/ansible/requirements/requirements.yml
+RUN ansible-galaxy install \
+    -p /usr/share/ansible/roles \
+    -r /usr/local/lib/node_modules/@flexdapps/gantree-cli/ansible/requirements/requirements.yml
 
 # Start ssh-agent
 RUN eval $(ssh-agent)
@@ -36,7 +44,6 @@ RUN eval $(ssh-agent)
 # See https://serverfault.com/a/940706 for why we can't chmod this in the dockerfile
 COPY ./entrypoint.sh entrypoint.sh
 
-ENV TERRAFORM_STATEFILE_PATH=/gantree/state
-
 # Run gantree-cli
 ENTRYPOINT ["./entrypoint.sh"]
+#ENTRYPOINT ["ls"]
