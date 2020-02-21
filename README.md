@@ -11,9 +11,9 @@ For information on setting up docker see [docs.docker.com/install](https://docs.
 
 ### Files ###
 
-Various files need to be passed to the docker container on running, this is accomplised by mounting a host directory to the `/gantree` directory in the container. This directory should contain a structure that will be recognized by the container and is described below.
+Various configuration files need to be passed to the docker container on running, this is accomplised by mounting a host directory to the `/gantree` directory in the container. The mounted directory should contain a structure that will be recognized by the container and is described below.
 
-For example (when running the container):
+To mount a directory when running the container:
 
 ``` bash
 docker run -v /home/myuser/work/gantree-working:/gantree gantree-cli-docker
@@ -25,6 +25,10 @@ Files you may wish to add to this directory:
 - `{host-dir}/credentials/google_application_credentials.json`
 - `{host-dir}/credentials/ssh_id_rsa_validator`
 
+For more information about these files see the [gantree-cli](https://bitbucket.org/flexdapps/gantree-gropius) documentation.
+
+The container may add other files and directories to the mounted directory to persist state between invocations.
+
 ### Environment Variables ###
 
 Some credentials can be passed directly to the docker container as environment variables.
@@ -35,9 +39,9 @@ These include:
 - AWS_SECRET_ACCESS_KEY
 - DIGITALOCEAN_TOKEN
 
-Note: the gropius-cli environment variables `ID_RSA_SSH_VALIDATOR` and `GOOGLE_APPLICATION_CREDENTIALS` should not be passed through to docker. Instead if the files are mounted (as shown above), the respective environment variables will be automatically populated.
+The gropius-cli environment variables `ID_RSA_SSH_VALIDATOR` and `GOOGLE_APPLICATION_CREDENTIALS` should not be passed through to docker. Instead if the files are mounted (as shown above), the respective environment variables will be automatically populated.
 
-For example (when running the container):
+To pass environment variables when running the container:
 
 ``` bash
 docker run -e DIGITALOCEAN_TOKEN=XXXXXXXXX gantree-cli-docker
@@ -60,7 +64,7 @@ DIGITALOCEAN_TOKEN=XXXXXXXXX
 ### Build the container ###
 
 ``` bash
-docker build -t {container-name} .
+docker build -t {docker-image-name} .
 ```
 
 eg.
@@ -76,7 +80,7 @@ docker run -v {host-config-directory}:/gantree \
            --env-file {env-file} \
            --user $(id -u):$(id -g) \
            --rm -ti \
-           {container-name} [cli arguments]
+           {docker-image-name} [cli arguments]
 ```
 
 eg.
