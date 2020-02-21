@@ -3,7 +3,7 @@
 This docker container is designed to simplify the setup and usage of gantree-cli
 
 For more information about the items and concepts referenced in this document
-please see the README for [gantree-cli](https://github.com/morelazers/gantree-cli).
+please see the README for [gantree-cli](https://github.com/flex-dapps/gantree-cli).
 
 For information on setting up docker see [docs.docker.com/install](https://docs.docker.com/install)
 
@@ -25,7 +25,7 @@ Files you may wish to add to this directory:
 - `{host-dir}/credentials/google_application_credentials.json`
 - `{host-dir}/credentials/ssh_id_rsa_validator`
 
-For more information about these files see the [gantree-cli](https://github.com/morelazers/gantree-cli) documentation.
+For more information about these files see the [gantree-cli](https://github.com/flex-dapps/gantree-cli) documentation.
 
 The container may add other files and directories to the mounted directory to persist state between invocations.
 
