@@ -25,7 +25,7 @@ Files you may wish to add to this directory:
 - `{host-dir}/credentials/google_application_credentials.json`
 - `{host-dir}/credentials/ssh_id_rsa_validator`
 
-For more information about these files see the [gantree-cli](https://bitbucket.org/flexdapps/gantree-gropius) documentation.
+For more information about these files see the [gantree-cli](https://github.com/morelazers/gantree-cli) documentation.
 
 The container may add other files and directories to the mounted directory to persist state between invocations.
 
