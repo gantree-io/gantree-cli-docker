@@ -23,7 +23,7 @@ Files you may wish to add to this folder:
 
 - `./config/{your-gantree-configuration-file}.json`
 - `./credentials/google_application_credentials.json`
-- `./credentials/ssh_id_rsa_validator` and `./credentials/ssh_id_rsa_validator.pub`
+- `./credentials/ssh_id_rsa_validator`
 
 ### Environment Variables ###
 
