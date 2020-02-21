@@ -21,19 +21,21 @@ docker run -v /home/myuser/work/gantree-working:/gantree gantree-cli-docker
 
 Files you may wish to add to this directory:
 
-- `./config/{your-gantree-configuration-file}.json`
-- `./credentials/google_application_credentials.json`
-- `./credentials/ssh_id_rsa_validator`
+- `{host-dir}/config/{your-gantree-configuration-file}.json`
+- `{host-dir}/credentials/google_application_credentials.json`
+- `{host-dir}/credentials/ssh_id_rsa_validator`
 
 ### Environment Variables ###
 
-Some credentials can be passed directly to the docker container as environment variables
+Some credentials can be passed directly to the docker container as environment variables.
 
 These include:
 
 - AWS_ACCESS_KEY_ID
 - AWS_SECRET_ACCESS_KEY
 - DIGITALOCEAN_TOKEN
+
+Note: the gropius-cli environment variables `ID_RSA_SSH_VALIDATOR` and `GOOGLE_APPLICATION_CREDENTIALS` should not be passed through to docker. Instead if the files are mounted (as shown above), the respective environment variables will be automatically populated.
 
 For example (when running the container):
 
