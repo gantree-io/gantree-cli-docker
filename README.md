@@ -3,9 +3,7 @@
 This docker container is designed to simplify the setup and usage of gantree-cli
 
 For more information about the items and concepts contained in this document
-please see the README for gantree-cli.
-
-TODO(ryan): LINK
+please see the README for [gantree-cli](https://bitbucket.org/flexdapps/gantree-gropius).
 
 ## Setup
 
