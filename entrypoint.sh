@@ -71,7 +71,6 @@ fi
 chmod 0700 $CRED_FOLDER
 
 # check credentials
-echo "$CRED_FOLDER/$GCP_CREDENTIAL_NAME"
 if [ -f "$CRED_FOLDER/$GCP_CREDENTIAL_NAME" ]; then
     export GOOGLE_APPLICATION_CREDENTIALS="$CRED_FOLDER/$GCP_CREDENTIAL_NAME"
 fi
@@ -87,7 +86,7 @@ fi
 # setup ssh
 export SSH_ID_RSA_VALIDATOR="$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME"
 eval $(ssh-agent) &>/dev/null
-ssh-add "$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME" # &>/dev/null
+ssh-add "$CRED_FOLDER/$VALIDATOR_PRIVATE_KEY_NAME" &>/dev/null
 
 echo -e "\n"
 
