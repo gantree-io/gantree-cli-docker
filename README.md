@@ -11,7 +11,7 @@ For information on setting up docker see [docs.docker.com/install](https://docs.
 
 ### Files ###
 
-Various files need to be passed to the docker container on running, this is accomplised by mounting a host directory to the `/gantree` folder in the container. This folder should use a structure that will be recognized by the container.
+Various files need to be passed to the docker container on running, this is accomplised by mounting a host directory to the `/gantree` directory in the container. This directory should contain a structure that will be recognized by the container and is described below.
 
 For example (when running the container):
 
@@ -19,7 +19,7 @@ For example (when running the container):
 docker run -v /home/myuser/work/gantree-working:/gantree gantree-cli-docker
 ```
 
-Files you may wish to add to this folder:
+Files you may wish to add to this directory:
 
 - `./config/{your-gantree-configuration-file}.json`
 - `./credentials/google_application_credentials.json`
