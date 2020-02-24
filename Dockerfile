@@ -24,18 +24,12 @@ RUN cd /tmp && \
     unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /usr/bin
 ENV TERRAFORM_STATEFILE_PATH=/gantree/state
 
-# install from tgz for the moment
-ARG GANTREE_CLI_PKG=flexdapps-gantree-cli-0.1.0-rc3.tgz
-COPY ./pkg/$GANTREE_CLI_PKG $GANTREE_CLI_PKG
-RUN npm install -g $GANTREE_CLI_PKG
-
-# TODO(ryan): Switch back to this when we have the cli on public npm
-# RUN npm install -g @flexdapps/gantree-cli
+RUN npm install -g gantree-cli@0.1.2
 
 # Setup ansible role requirements
 RUN ansible-galaxy install \
     -p /usr/share/ansible/roles \
-    -r /usr/local/lib/node_modules/@flexdapps/gantree-cli/ansible/requirements/requirements.yml
+    -r /usr/local/lib/node_modules/gantree-cli/ansible/requirements/requirements.yml
 
 # Start ssh-agent
 RUN eval $(ssh-agent)
