@@ -4,12 +4,14 @@ FROM node:10.19-alpine3.11
 
 # Get packages
 RUN apk update && \
-    apk add --update curl jq python bash ca-certificates git openssl \
-    unzip wget build-base python-dev py-pip jpeg-dev zlib-dev libffi-dev \
-    openssl-dev git openssh-client sshpass
+    apk add --update curl jq bash ca-certificates git openssl \
+    unzip wget build-base jpeg-dev zlib-dev libffi-dev \
+    openssl-dev git openssh-client sshpass python3 python3-dev
+
+RUN ln -s /usr/bin/python3 /usr/bin/python
 
 # Install ansible
-RUN pip install --upgrade pip
+RUN pip3 install --upgrade pip
 ENV LIBRARY_PATH=/lib:/usr/lib
 WORKDIR /ansible
 VOLUME [ "/ansible" ]
@@ -17,19 +19,19 @@ ARG ANSIBLE_VERSION=2.9
 RUN pip install ansible==$ANSIBLE_VERSION
 WORKDIR /home
 
-# Install terraform
-ARG TERRAFORM_VERSION=0.12.20
-RUN cd /tmp && \
-    wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip && \
-    unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /usr/bin
-ENV TERRAFORM_STATEFILE_PATH=/gantree/state
+RUN npm install -g gantree-cli@0.4.0-b3
 
-RUN npm install -g gantree-cli@0.1.2
+#RUN mkdir /usr/local/lib/node_modules/gantree-cli/node_modules/gantree-lib/inventory/active
+RUN chmod 777 /usr/local/lib/node_modules/gantree-cli/node_modules/gantree-lib/inventory/active
+
+# Setup python requirements
+COPY ./python_requirements.txt python_requirements.txt
+RUN pip3 install -r ./python_requirements.txt
 
 # Setup ansible role requirements
 RUN ansible-galaxy install \
     -p /usr/share/ansible/roles \
-    -r /usr/local/lib/node_modules/gantree-cli/ansible/requirements/requirements.yml
+    -r /usr/local/lib/node_modules/gantree-cli/node_modules/gantree-lib/ansible/requirements/requirements.yml
 
 # Start ssh-agent
 RUN eval $(ssh-agent)
@@ -40,4 +42,3 @@ COPY ./entrypoint.sh entrypoint.sh
 
 # Run gantree-cli
 ENTRYPOINT ["./entrypoint.sh"]
-#ENTRYPOINT ["ls"]

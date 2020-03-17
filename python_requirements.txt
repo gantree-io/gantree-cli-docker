@@ -1,0 +1,5 @@
+boto
+botocore
+boto3
+requests
+google-auth
