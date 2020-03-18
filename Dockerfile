@@ -19,7 +19,7 @@ ARG ANSIBLE_VERSION=2.9
 RUN pip install ansible==$ANSIBLE_VERSION
 WORKDIR /home
 
-RUN npm install -g gantree-cli@0.4.0-b3
+RUN npm install -g gantree-cli@0.4.0-b4
 
 #RUN mkdir /usr/local/lib/node_modules/gantree-cli/node_modules/gantree-lib/inventory/active
 RUN chmod 777 /usr/local/lib/node_modules/gantree-cli/node_modules/gantree-lib/inventory/active
@@ -35,6 +35,9 @@ RUN ansible-galaxy install \
 
 # Start ssh-agent
 RUN eval $(ssh-agent)
+
+COPY ./ansible.cfg ansible.cfg
+ENV ANSIBLE_CONFIG=ansible.cfg
 
 # Setup entrypoint script
 # See https://serverfault.com/a/940706 for why we can't chmod this in the dockerfile
