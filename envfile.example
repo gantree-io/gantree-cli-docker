@@ -1,3 +1,6 @@
-AWS_ACCESS_KEY_ID={my-aws-access-key}
-AWS_SECRET_ACCESS_KEY={my-aws-secret-key}
-DIGITALOCEAN_TOKEN={my-digitalocean-access-token}
+GANTREE_CONFIG_PATH=/gantree/config/my-project-config.json
+DO_API_TOKEN=xxxxxx
+AWS_ACCESS_KEY_ID=yyyyyy
+AWS_SECRET_ACCESS_KEY=zzzzzz
+GCP_AUTH_KIND=serviceaccount
+GCP_SERVICE_ACCOUNT_FILE=/gantree/credentials/gcp/my-project-gcp-creds.json
