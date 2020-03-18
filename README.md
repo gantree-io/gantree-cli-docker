@@ -22,12 +22,15 @@ docker run -v /home/myuser/work/gantree-working:/gantree gantree-cli-docker
 Files you may wish to add to this directory:
 
 - `{host-dir}/config/{your-gantree-configuration-file}.json`
-- `{host-dir}/credentials/google_application_credentials.json`
-- `{host-dir}/credentials/ssh_id_rsa_validator`
+- `{host-dir}/gcp/my_google_application_credentials.json`
+- `{host-dir}/ssh/my_ssh_id_rsa_validator_key`
+
+Private ssh keys mounted to /gantree/ssh/* will be automatically detected and made available to gantree-cli
+
+Because of the current architecture (using ssh-agent) there is likely a practical limit of around 4 ssh keys in use before
+instance connections will start to be rejected for too many failed attempts, this is something we are working to improve.
 
 For more information about these files see the [gantree-cli](https://github.com/flex-dapps/gantree-cli) documentation.
-
-The container may add other files and directories to the mounted directory to persist state between invocations.
 
 ### Environment Variables ###
 
@@ -35,16 +38,17 @@ Some credentials can be passed directly to the docker container as environment v
 
 These include:
 
+- GANTREE_CONFIG_PATH
 - AWS_ACCESS_KEY_ID
 - AWS_SECRET_ACCESS_KEY
-- DIGITALOCEAN_TOKEN
-
-The gropius-cli environment variables `ID_RSA_SSH_VALIDATOR` and `GOOGLE_APPLICATION_CREDENTIALS` should not be passed through to docker. Instead if the files are mounted (as shown above), the respective environment variables will be automatically populated.
+- DO_API_TOKEN
+- GCP_AUTH_KIND
+- GCP_SERVICE_ACCOUNT_FILE
 
 To pass environment variables when running the container:
 
 ``` bash
-docker run -e DIGITALOCEAN_TOKEN=XXXXXXXXX gantree-cli-docker
+docker run -e DO_API_TOKEN=XXXXXXXXX gantree-cli-docker
 ```
 
 or
@@ -56,7 +60,24 @@ docker run --env-file myenvfile gantree-cli-docker
 where myenvfile contains
 
 ``` bash
-DIGITALOCEAN_TOKEN=XXXXXXXXX
+DO_API_TOKEN=XXXXXXXXX
+```
+
+Note: Environment variables that contain paths should point to the file location mounted inside the container
+
+For example, if a config file is located on the host at
+
+`/home/myuser/Work/my_gantree_workspace/config/myconfig.json`
+
+the container could be run with
+
+``` bash
+docker run \
+    -v /home/myuser/Work/my_gantree_workspace:/gantree \
+    -e GANTREE_CONFIG_PATH=/gantree/config/myconfig.json \
+    --user $(id -u):$(id -g) \
+    --rm -ti
+    gantree-cli-docker
 ```
 
 ## Usage ##
@@ -76,7 +97,7 @@ docker build -t gantree-cli-docker .
 ### Run gantree-cli-docker ###
 
 ``` bash
-docker run -v {host-config-directory}:/gantree \
+docker run -v {host-directory}:/gantree \
            --env-file {env-file} \
            --user $(id -u):$(id -g) \
            --rm -ti \
@@ -90,5 +111,5 @@ docker run -v /home/myuser/work/gantree_work:/gantree \
            --env-file /home/myuser/work/gantree_env/envfile \
            --user $(id -u):$(id -g) \
            --rm -ti \
-           gantree-cli-docker sync --config /gantree/config/main.conf
+           gantree-cli-docker sync
 ```
