@@ -20,12 +20,13 @@ ARG ANSIBLE_VERSION=2.9
 RUN pip install ansible==$ANSIBLE_VERSION
 WORKDIR /home
 
-# Install gantree-cli
-RUN npm install -g gantree-cli@0.7.0
-
 # Setup python requirements
 COPY ./python_requirements.txt python_requirements.txt
 RUN pip3 install -r ./python_requirements.txt
+
+# Install gantree-cli
+ARG GANTREE_CLI_VERSION=0.7.3-alpha.1
+RUN npm install -g gantree-cli@$GANTREE_CLI_VERSION
 
 # Setup ansible role requirements
 RUN ansible-galaxy install \
@@ -36,9 +37,8 @@ RUN ansible-galaxy install \
 COPY ./ansible.cfg ansible.cfg
 ENV ANSIBLE_CONFIG=ansible.cfg
 
-# TODO(ryan): move this into the mounted /gantree folder
-RUN mkdir /usr/local/lib/node_modules/gantree-cli/node_modules/gantree-lib/inventory
-RUN chmod 777 /usr/local/lib/node_modules/gantree-cli/node_modules/gantree-lib/inventory
+# Set inventory path (where project data is stored)
+ENV GANTREE_OVERRIDE_INVENTORY_PATH=/gantree/projects
 
 # Setup entrypoint script
 # See https://serverfault.com/a/940706 for why we can't chmod this in the dockerfile
