@@ -1,6 +1,6 @@
 
 # Base alpine image with node and npm preinstalled
-FROM node:10.19-alpine3.11
+FROM node:lts-alpine3.11
 
 # Get packages
 RUN apk update && \
@@ -8,6 +8,7 @@ RUN apk update && \
     unzip wget build-base jpeg-dev zlib-dev libffi-dev \
     openssl-dev git openssh-client sshpass python3 python3-dev
 
+# alias python3 as python
 RUN ln -s /usr/bin/python3 /usr/bin/python
 
 # Install ansible
@@ -19,10 +20,8 @@ ARG ANSIBLE_VERSION=2.9
 RUN pip install ansible==$ANSIBLE_VERSION
 WORKDIR /home
 
-RUN npm install -g gantree-cli@0.4.0-b4
-
-#RUN mkdir /usr/local/lib/node_modules/gantree-cli/node_modules/gantree-lib/inventory/active
-RUN chmod 777 /usr/local/lib/node_modules/gantree-cli/node_modules/gantree-lib/inventory/active
+# Install gantree-cli
+RUN npm install -g gantree-cli@0.7.0
 
 # Setup python requirements
 COPY ./python_requirements.txt python_requirements.txt
@@ -33,11 +32,13 @@ RUN ansible-galaxy install \
     -p /usr/share/ansible/roles \
     -r /usr/local/lib/node_modules/gantree-cli/node_modules/gantree-lib/ansible/requirements/requirements.yml
 
-# Start ssh-agent
-RUN eval $(ssh-agent)
-
+# Add ansible cfg
 COPY ./ansible.cfg ansible.cfg
 ENV ANSIBLE_CONFIG=ansible.cfg
+
+# TODO(ryan): move this into the mounted /gantree folder
+RUN mkdir /usr/local/lib/node_modules/gantree-cli/node_modules/gantree-lib/inventory
+RUN chmod 777 /usr/local/lib/node_modules/gantree-cli/node_modules/gantree-lib/inventory
 
 # Setup entrypoint script
 # See https://serverfault.com/a/940706 for why we can't chmod this in the dockerfile
