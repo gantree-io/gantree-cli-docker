@@ -67,18 +67,28 @@ Note: Environment variables that contain paths should point to the file location
 
 For example, if a config file is located on the host at
 
-`/home/myuser/Work/my_gantree_workspace/config/myconfig.json`
+`/home/myuser/my_gantree_workspace/config/myconfig.json`
 
 the container could be run with
 
 ``` bash
 docker run \
-    -v /home/myuser/Work/my_gantree_workspace:/gantree \
+    -v /home/myuser/my_gantree_workspace:/gantree \
     -e GANTREE_CONFIG_PATH=/gantree/config/myconfig.json \
     --user $(id -u):$(id -g) \
     --rm -ti
     gantree-cli-docker
 ```
+
+Gantree config files support user defined environment variable lookup of the form
+
+``` json
+{
+    some_key: "$env:USER_DEFINED_ENV_VAR"
+}
+```
+
+These can also be passed through using the above methods
 
 ## Usage ##
 
