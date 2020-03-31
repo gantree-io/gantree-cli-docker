@@ -27,6 +27,7 @@ GANTREE_ROOT="/gantree"
 CONFIG_FOLDER="${GANTREE_ROOT}/config"
 GCP_FOLDER="${GANTREE_ROOT}/gcp"
 SSH_FOLDER="${GANTREE_ROOT}/ssh"
+PROJECTS_FOLDER="${GANTREE_ROOT}/projects"
 
 GCP_CREDENTIAL_NAME="google_application_credentials.json"
 
@@ -68,6 +69,12 @@ if [ ! -d "$SSH_FOLDER" ]; then
     mkdir $SSH_FOLDER
 fi
 chmod 0700 $SSH_FOLDER
+
+if [ ! -d "$PROJECTS_FOLDER" ]; then
+    echo -e "\nProjects directory not found, creating.."
+    echo -e ""
+    mkdir $PROJECTS_FOLDER
+fi
 
 # check credentials
 if [ ! -z "$GCP_SERVICE_ACCOUNT_FILE" ]; then

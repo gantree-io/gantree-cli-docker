@@ -22,8 +22,8 @@ docker run -v /home/myuser/work/gantree-working:/gantree gantree-cli-docker
 Files you may wish to add to this directory:
 
 - `{host-dir}/config/{your-gantree-configuration-file}.json`
-- `{host-dir}/gcp/my_google_application_credentials.json`
-- `{host-dir}/ssh/my_ssh_id_rsa_validator_key`
+- `{host-dir}/gcp/{my_google_application_credentials}.json`
+- `{host-dir}/ssh/{my_ssh_private_key}`
 
 Private ssh keys mounted to /gantree/ssh/* will be automatically detected and made available to gantree-cli
 
