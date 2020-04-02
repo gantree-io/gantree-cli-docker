@@ -21,28 +21,29 @@ RUN pip install ansible==$ANSIBLE_VERSION
 WORKDIR /home
 
 # Setup python requirements
-COPY ./python_requirements.txt python_requirements.txt
+COPY ./include/python_requirements.txt python_requirements.txt
 RUN pip3 install -r ./python_requirements.txt
 
 # Install gantree-cli
-ARG GANTREE_CLI_VERSION=0.7.3-alpha.1
+ARG GANTREE_CLI_VERSION=0.8.0
 RUN npm install -g gantree-cli@$GANTREE_CLI_VERSION
 
 # Setup ansible role requirements
+COPY ./include/ansible_requirements.yml /ansible_requirements.yml
 RUN ansible-galaxy install \
     -p /usr/share/ansible/roles \
-    -r /usr/local/lib/node_modules/gantree-cli/node_modules/gantree-lib/ansible/requirements/requirements.yml
+    -r /ansible_requirements.yml
 
 # Add ansible cfg
-COPY ./ansible.cfg ansible.cfg
+COPY ./include/ansible.cfg ansible.cfg
 ENV ANSIBLE_CONFIG=ansible.cfg
 
-# Set inventory path (where project data is stored)
-ENV GANTREE_OVERRIDE_INVENTORY_PATH=/gantree/projects
+# Set inventory path (where inventory data is stored)
+ENV GANTREE_OVERRIDE_INVENTORY_PATH=/gantree/inventory
 
 # Setup entrypoint script
 # See https://serverfault.com/a/940706 for why we can't chmod this in the dockerfile
-COPY ./entrypoint.sh entrypoint.sh
+COPY ./include/entrypoint.sh entrypoint.sh
 
 # Run gantree-cli
 ENTRYPOINT ["./entrypoint.sh"]

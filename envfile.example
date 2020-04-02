@@ -4,3 +4,4 @@ AWS_ACCESS_KEY_ID=yyyyyy
 AWS_SECRET_ACCESS_KEY=zzzzzz
 GCP_AUTH_KIND=serviceaccount
 GCP_SERVICE_ACCOUNT_FILE=/gantree/credentials/gcp/my-project-gcp-creds.json
+MY_VALIDATOR_KEY_PATH=/gantree/ssh/my_validator_key
