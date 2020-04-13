@@ -28,6 +28,7 @@ CONFIG_FOLDER="${GANTREE_ROOT}/config"
 GCP_FOLDER="${GANTREE_ROOT}/gcp"
 SSH_FOLDER="${GANTREE_ROOT}/ssh"
 INVENTORY_FOLDER="${GANTREE_ROOT}/inventory"
+CONTROL_FOLDER="${GANTREE_ROOT}/control"
 
 GCP_CREDENTIAL_NAME="google_application_credentials.json"
 
@@ -74,6 +75,12 @@ if [ ! -d "$INVENTORY_FOLDER" ]; then
     echo -e "\nInventory directory not found, creating.."
     echo -e ""
     mkdir $INVENTORY_FOLDER
+fi
+
+if [ ! -d "$CONTROL_FOLDER" ]; then
+    echo -e "\nControl directory not found, creating.."
+    echo -e ""
+    mkdir $CONTROL_FOLDER
 fi
 
 # check credentials

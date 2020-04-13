@@ -40,6 +40,7 @@ ENV ANSIBLE_CONFIG=ansible.cfg
 
 # Set inventory path (where inventory data is stored)
 ENV GANTREE_OVERRIDE_INVENTORY_PATH=/gantree/inventory
+ENV GANTREE_CONTROL_PATH=/gantree/control
 
 # Setup entrypoint script
 # See https://serverfault.com/a/940706 for why we can't chmod this in the dockerfile
