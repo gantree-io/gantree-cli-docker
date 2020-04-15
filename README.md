@@ -22,13 +22,15 @@ docker run -v /home/myuser/work/gantree-working:/gantree gantree-cli-docker
 Files you may wish to add to this directory:
 
 - `{host-dir}/config/{your-gantree-configuration-file}.json`
-- `{host-dir}/gcp/{my_google_application_credentials}.json`
-- `{host-dir}/ssh/{my_ssh_private_key}`
+- `{host-dir}/gcp/{your-google-application-credentials}.json`
+- `{host-dir}/ssh/{your-ssh-private-key}`
 
 Private ssh keys mounted to /gantree/ssh/* will be automatically detected and made available to gantree-cli
 
-Because of the current architecture (using ssh-agent) there is likely a practical limit of around 4 ssh keys in use before
-instance connections will start to be rejected for too many failed attempts, this is something we are working to improve.
+Private keys should also be RSA type, contain embedded PEM information, and not use a password  
+Some versions of ssh-keygen will generate this key by default, for others versions you can force this behaviour:
+
+`ssh-keygen -f ./my_validator_key -t rsa -m PEM -q -N ""`
 
 For more information about these files see the [gantree-cli](https://github.com/flex-dapps/gantree-cli) documentation.
 
@@ -84,7 +86,7 @@ Gantree config files support user defined environment variable lookup of the for
 
 ``` json
 {
-    some_key: "$env:USER_DEFINED_ENV_VAR"
+    "some_key": "$env:USER_DEFINED_ENV_VAR"
 }
 ```
 

@@ -25,7 +25,7 @@ COPY ./include/python_requirements.txt python_requirements.txt
 RUN pip3 install -r ./python_requirements.txt
 
 # Install gantree-cli
-ARG GANTREE_CLI_VERSION=0.8.0
+ARG GANTREE_CLI_VERSION=0.8.2
 RUN npm install -g gantree-cli@$GANTREE_CLI_VERSION
 
 # Setup ansible role requirements
