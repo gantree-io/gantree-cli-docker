@@ -2,8 +2,9 @@
 
 This docker container is designed to simplify the setup and usage of gantree-cli
 
-For more information about the items and concepts referenced in this document
-please see the README for [gantree-cli](https://github.com/flex-dapps/gantree-cli).
+For deeper understanding of the items and concepts referenced in this document
+please see the READMEs for [gantree-cli](https://github.com/flex-dapps/gantree-cli#gantree-cli)
+and [gantree-lib](https://github.com/flex-dapps/gantree-lib-nodejs#gantree-library).
 
 For information on setting up docker see [docs.docker.com/install](https://docs.docker.com/install)
 
@@ -11,7 +12,9 @@ For information on setting up docker see [docs.docker.com/install](https://docs.
 
 ### Files ###
 
-Various configuration files need to be passed to the docker container on running, this is accomplised by mounting a host directory to the `/gantree` directory in the container. The mounted directory should contain a structure that will be recognized by the container and is described below.
+Various configuration files need to be passed to the docker container on running,
+this is accomplised by mounting a host directory as the `/gantree` directory in the container.
+The mounted directory should contain a structure that will be recognized by the container and is described below.
 
 To mount a directory when running the container:
 
@@ -25,12 +28,10 @@ Files you may wish to add to this directory:
 - `{host-dir}/gcp/{your-google-application-credentials}.json`
 - `{host-dir}/ssh/{your-ssh-private-key}`
 
-Private ssh keys mounted to /gantree/ssh/* will be automatically detected and made available to gantree-cli
-
-Private keys should also be RSA type, contain embedded PEM information, and not use a password  
+Private keys should be RSA type, contain embedded PEM information, and not use a password  
 Some versions of ssh-keygen will generate this key by default, for others versions you can force this behaviour:
 
-`ssh-keygen -f ./my_validator_key -t rsa -m PEM -q -N ""`
+`ssh-keygen -f ./ssh_id_rsa_validator -t rsa -m PEM -q -N ""`
 
 For more information about these files see the [gantree-cli](https://github.com/flex-dapps/gantree-cli) documentation.
 
@@ -77,7 +78,7 @@ the container could be run with
 docker run \
     -v /home/myuser/my_gantree_workspace:/gantree \
     -e GANTREE_CONFIG_PATH=/gantree/config/myconfig.json \
-    --user $(id -u):$(id -g) \
+    -e HOST_USER=$(id -u) \
     --rm -ti
     gantree-cli-docker
 ```
@@ -111,7 +112,7 @@ docker build -t gantree-cli-docker .
 ``` bash
 docker run -v {host-directory}:/gantree \
            --env-file {env-file} \
-           --user $(id -u):$(id -g) \
+           -e HOST_USER=$(id -u) \
            --rm -ti \
            {docker-image-name} [cli arguments]
 ```
@@ -121,7 +122,7 @@ eg.
 ``` bash
 docker run -v /home/myuser/work/gantree_work:/gantree \
            --env-file /home/myuser/work/gantree_env/envfile \
-           --user $(id -u):$(id -g) \
+           -e HOST_USER=$(id -u) \
            --rm -ti \
            gantree-cli-docker sync
 ```
