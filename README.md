@@ -65,8 +65,21 @@ where myenvfile contains
 ``` bash
 DO_API_TOKEN=XXXXXXXXX
 ```
+#### HOST_USER ####
 
-Note: Environment variables that contain paths should point to the file location mounted inside the container
+The `HOST_USER` environment variable can also be passed to ensure files created by docker in the {host-folder} become owned by the host machine's user account
+
+As a run command parameter:
+
+``` bash
+-e HOST_USER=$(id -u)
+```
+
+Or in the env-file if you set `HOST_USER` to the result of running `id -u` in terminal, eg. `1000`, `1001`, `..` depending on your system
+
+#### Paths ####
+
+Environment variables that contain paths should point to the file location mounted inside the container
 
 For example, if a config file is located on the host at
 
