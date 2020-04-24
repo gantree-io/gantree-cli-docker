@@ -6,7 +6,7 @@ USAGE=$(cat <<-END
     Container Usage:\n
     docker run -v {host-config-directory}:/gantree \\ \n
         --env-file {env-file} \\ \n
-        --user \$(id -u):\$(id -g) \\ \n
+        -e HOST_USER=$(id -u) \\ \n
         --rm -ti \\ \n
         {docker-image-name} [cli arguments]\n
     \n
@@ -38,49 +38,38 @@ if [ ! -d "/gantree" ]; then
     exit 1
 fi
 
-# check host folder permissions
-GANTREE_ROOT_OWNER=$(stat -c '%u' /gantree)
-if [ $GANTREE_ROOT_OWNER -ne $(id -u) ]; then
-    echo -e "\nPlease ensure docker user has ownership of mounted {host-folder} on host system"
-
-    echo -e "\n{host-folder} owner: $GANTREE_ROOT_OWNER"
-    echo -e "Docker user: $(id -u)"
-
-    echo -e "\nYou can do this with:\nsudo chown $(id -u):$(id -g) {host-folder} on the host machine"
-    echo -e "\nWhere {host-folder} is the absolute path to the host-folder you're mounting"
-    exit 1
-fi
+chown $HOST_USER /gantree
 
 # check sub folders
 if [ ! -d "$CONFIG_FOLDER" ]; then
     echo -e "\nConfig directory not found, creating.."
     echo -e ""
-    mkdir $CONFIG_FOLDER
+    mkdir $CONFIG_FOLDER && chown $HOST_USER $CONFIG_FOLDER
 fi
 
 if [ ! -d "$GCP_FOLDER" ]; then
     echo -e "\nGCP directory not found, creating.."
     echo -e ""
-    mkdir $GCP_FOLDER
+    mkdir $GCP_FOLDER && chown $HOST_USER $GCP_FOLDER
 fi
 
 if [ ! -d "$SSH_FOLDER" ]; then
     echo -e "\nSSH directory not found, creating.."
     echo -e ""
-    mkdir $SSH_FOLDER
+    mkdir $SSH_FOLDER && chown $HOST_USER $SSH_FOLDER
 fi
 chmod 0700 $SSH_FOLDER
 
 if [ ! -d "$INVENTORY_FOLDER" ]; then
     echo -e "\nInventory directory not found, creating.."
     echo -e ""
-    mkdir $INVENTORY_FOLDER
+    mkdir $INVENTORY_FOLDER && chown $HOST_USER $INVENTORY_FOLDER
 fi
 
 if [ ! -d "$CONTROL_FOLDER" ]; then
     echo -e "\nControl directory not found, creating.."
     echo -e ""
-    mkdir $CONTROL_FOLDER
+    mkdir $CONTROL_FOLDER && chown $HOST_USER $CONTROL_FOLDER
 fi
 
 # check credentials
@@ -97,6 +86,7 @@ fi
 if [ -z "$(ls -A $SSH_FOLDER)" ]; then
     echo -e "Warning: No private ssh keys found in $SSH_FOLDER"
     echo -e "These are needed to connect nodes for provisioning"
+    echo -e "See README for more info"
     echo -e ""
 fi
 
@@ -115,13 +105,6 @@ if [ ! -f "$GANTREE_CONFIG_PATH" ]; then
     exit 1
 fi
 
-# setup ssh
-eval $(ssh-agent) &>/dev/null
-for private_key_file in $SSH_FOLDER/*; do
-    ssh-add "$private_key_file"
-done
-
-echo -e "\n"
-
-# run gantree-cli
 gantree-cli "$@"
+
+chown -R $HOST_USER /gantree
